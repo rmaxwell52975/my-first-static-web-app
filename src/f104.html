@@ -1,0 +1,94 @@
+<html title="Hero Frequency Generator Control">
+<body>
+        
+<script>
+var tryip = 100;
+var subneturl = 'http://192.168.143.';
+var foundF104 = false;
+let scanarray = new Array();
+
+function onF104Load()
+{
+    console.log('load called: ');
+    // foundF104 = true;
+}
+
+function onF104Timeout()
+{
+    console.log('timeout called');
+    //tryip++;
+    //scanF104();
+}
+
+function onF104Error()
+{
+    console.log('error called: ');
+}
+
+function scanF104()
+{
+    var url; 
+	for (i = 0; i < 20; i++)
+	{
+        scanarray.push(new XMLHttpRequest());
+    
+        scanarray[i].timeout = 2000;
+    	scanarray[i].onload = onF104Load();
+	    scanarray[i].ontimeout = onF104Timeout();
+	    scanarray[i].onerror = onF104Error();
+
+        url = 'http://192.168.143.' + i + '/deviceinfo';
+        console.log('opening: ' + url);
+        scanarray[i].open("GET", url, true);
+        scanarray[i].send(null);
+    }
+}
+
+function gotourl(command)
+{
+    //var x = 'dalsdkjasdklj';
+    var x = document.getElementById("addrval").value;
+    x = x + tryip++;
+	loc = x + '/' + command;
+    console.log('go to url: ' + loc);
+    window.location = loc;
+}
+
+function gotoall(command, addr)
+{
+    var x = addr;
+    loc = x + '/' + command;
+    console.log('go to url: ' + loc);
+    window.location = loc;
+}
+
+function setwifi()
+{
+    var x = document.getElementById("ssid").value;
+    var y = document.getElementById("pwd").value;
+    addrval = document.getElementById("addrval").value;
+
+    loc = addrval + '/wificonfig?' + 'ssid=' + x + '&' + y;
+    window.location = loc;  
+}
+
+</script>
+
+<img src="img/helixbearback.png">
+<h1>Hero Frequencies Control</h1>
+Address: <input type="text" width="100" id="addrval" value="http://192.168.143.158">
+<input type="button" id="btnFind" onclick="javascript:scanF104()" value="Find">
+<br>
+<a href="javascript:gotourl('stop')">Stop</a><br>
+<a href="javascript:gotourl('getstatus')">Status</a><br>
+<a href="javascript:gotourl('getautorun')">Get Auto Run</a><br>
+<a href="jacascript:gotourl('/erasessid1905')">Erase SSID</a><br><br>
+SSID: <input type="text" width="75" id="ssid" value="F104"> <input tuype="text" width="75" id="pwd" value="">
+<a href="javascript:setwifi()">Set WiFi</a><br>
+
+<br>
+<div id="results">
+here is some div text
+</div>
+</body>
+</html>
